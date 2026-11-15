@@ -1,6 +1,18 @@
-# Segmented Toggle Switch Plugin — Oracle APEX
+# Segmented Toggle Switch — Oracle APEX Item Plugin
 
-**By Hassaan Ahmed Tahir — Senior Oracle APEX Developer | [Read the full tutorial on ApexCodex](https://apexcodex.blogspot.com/2026/08/how-to-build-stylish-auto-login-toggle.html)**
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Oracle APEX](https://img.shields.io/badge/Oracle%20APEX-Item%20Plugin-F80000)
+![PL/SQL](https://img.shields.io/badge/PL%2FSQL-Oracle-blue)
+![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E)
+![Version](https://img.shields.io/badge/version-1.1.0-informational)
+
+> An LOV-driven, animated sliding toggle switch for Oracle APEX — a modern alternative to a radio group or select list.
+
+<p align="center">
+  <img src="docs/images/toggle-switch-login-page.png" alt="Animated toggle switch between One-Time Login and Remember 1 Year on a login page" width="726">
+</p>
+
+**By Hassaan Ahmed Tahir — Senior Oracle APEX Developer · [Read the full tutorial](https://apexwithhassaan.vercel.app/blog/auto-login-toggle-switch-plugin)**
 
 Lightweight, fully configurable Oracle APEX **Item Plugin** that renders an LOV-driven, N-segment sliding toggle switch — a modern alternative to a radio group or select list for a small, fixed set of choices.
 
@@ -10,16 +22,32 @@ Instead of the flat list of radio buttons or a plain select list APEX gives you 
 
 ---
 
-## 📦 What's in this repo
+## ✨ Features
 
-| File | Description |
-|---|---|
-| `toggle_switch.sql` | PL/SQL render procedure only — the source code registered in the plugin's Source section |
-| `toggle_switch.css` | Stylesheet — track, sliding knob, segments, focus ring, click ripple animation |
-| `toggle_switch.js` | Client-side behavior — positions the knob, handles clicks/keyboard, dispatches the change event |
-| `README.md` | This guide — how the plugin is structured and built, step by step |
+- **Fully LOV-driven** — any 2+ value List of Values, static or dynamic, becomes a segmented switch
+- **Themeable without CSS** — background, knob and border colors plus border thickness as page-designer attributes, with sensible defaults
+- **Native session state** — writes into APEX's own hidden input and fires a real `change` event, so Dynamic Actions just work
+- **Polished interaction** — bouncy sliding knob and a per-click ripple
+- **Accessible** — keyboard-focusable segments operated with Enter / Space, focus ring for keyboard users only
+- **Responsive sizing** — scales with APEX's Large / X-Large item width classes
 
-> ⚠️ **Note:** These three files are for reading and reuse. To actually install the plugin into your own APEX workspace, build it manually by following the steps below and pasting each file's content into the matching section of the plugin definition — Source, Files (CSS), and Files (JavaScript).
+---
+
+## 📁 Repository structure
+
+```
+apex-toggle-switch-plugin/
+├── src/
+│   ├── toggle_switch.sql         # PL/SQL render procedure (plugin Source)
+│   ├── toggle_switch.css         # plugin file: track, knob, ripple
+│   └── toggle_switch.js          # plugin file: shToggleSwitch behavior
+├── docs/images/                  # screenshots used in this README
+├── CHANGELOG.md
+├── LICENSE                       # MIT
+└── README.md
+```
+
+> ⚠️ **Note:** To install the plugin into your own APEX workspace, follow the steps below and paste each file into the matching section of the plugin definition — Source, Files (CSS) and Files (JavaScript).
 
 ---
 
@@ -64,7 +92,7 @@ Head to **Shared Components → Plug-ins → Create** and fill in the Name secti
 
 ## 2. Add the PL/SQL Source Code
 
-In the **Source** section, paste the full contents of [`toggle_switch.sql`](./toggle_switch.sql).
+In the **Source** section, paste the full contents of [`toggle_switch.sql`](./src/toggle_switch.sql).
 
 This procedure runs the item's own **List of Values** query through `apex_plugin_util.get_data` to fetch display/return value pairs, prints the standard hidden input APEX uses to track the item's session state, then loops over the LOV rows to render one `<span class="sh-tgl-segment">` per value — marking whichever one matches the item's current value as active. The background, knob, and border colors and thickness are written inline via `style="..."` from the plugin's own custom attributes, so no color needs to be hardcoded in the CSS.
 
@@ -141,7 +169,7 @@ Now add all 4 Custom Attributes, each mapped to its `p_item.attribute_0N` value 
 
 ## 8. Add the CSS File
 
-Under **Files**, create `toggle_switch.css` and paste the contents of [`toggle_switch.css`](./toggle_switch.css) from this repo.
+Under **Files**, create `toggle_switch.css` and paste the contents of [`toggle_switch.css`](./src/toggle_switch.css) from this repo.
 
 This stylesheet handles the pill-shaped outer track (`.sh-tgl-toggle`), the absolutely-positioned sliding knob (`.sh-tgl-knob`) that animates its `transform` and `width` with a bouncy cubic-bezier easing, the segment labels and their hover/active states, a keyboard-only focus ring (shown only when `.sh-tgl-using-keyboard` is set by the JS), responsive sizing driven by APEX's standard `.t-Form-fieldContainer--large` / `--xlarge` / `--stretchInputs` classes, and the short-lived click-ripple animation.
 
@@ -151,7 +179,7 @@ This stylesheet handles the pill-shaped outer track (`.sh-tgl-toggle`), the abso
 
 ## 9. Add the JavaScript File
 
-Now create `toggle_switch.js` and paste the contents of [`toggle_switch.js`](./toggle_switch.js) from this repo.
+Now create `toggle_switch.js` and paste the contents of [`toggle_switch.js`](./src/toggle_switch.js) from this repo.
 
 This is the heart of the plugin — namespaced as `shToggleSwitch` to avoid global scope conflicts, with defensive `null` checks on every DOM lookup so a missing element never throws an unhandled error that could block APEX's onload queue.
 
@@ -166,12 +194,14 @@ This is the heart of the plugin — namespaced as `shToggleSwitch` to avoid glob
 
 ## 10. Link Both Files Under "File URLs to Load"
 
-Scroll to **File URLs to Load** and reference both minified files using APEX's plugin file substitution syntax — APEX automatically generates and serves the `#MIN#` versions once the files are uploaded:
+Scroll to **File URLs to Load** and reference both files using APEX's plugin file substitution syntax — APEX automatically generates and serves the `#MIN#` versions once the files are uploaded:
 
 | Field | Value |
 |---|---|
-| Cascading Style Sheet | `#PLUGIN_FILES#style#MIN#.css` |
-| JavaScript | `#PLUGIN_FILES#javascript#MIN#.js` |
+| Cascading Style Sheet | `#PLUGIN_FILES#toggle_switch#MIN#.css` |
+| JavaScript | `#PLUGIN_FILES#toggle_switch#MIN#.js` |
+
+> 💡 **Tip:** The name in each URL must match the file name you uploaded under **Files** — here `toggle_switch.css` and `toggle_switch.js`.
 
 ---
 
@@ -211,8 +241,34 @@ The switch renders as a pill-shaped track with one segment per LOV row and the k
 
 ---
 
-That's the full build — from an empty plugin shell to a production-ready, fully themeable, LOV-driven segmented toggle switch. If you build this into your own app, feel free to open an issue or share which color combinations you end up using most!
+## 📸 Screenshots
 
-🙏 **A quick thanks** — this plugin wouldn't be where it is without **Sajjad Hanifa**, who's been a huge help shaping these features and pushing for building them right. Really appreciate the support!
+<p align="center">
+  <img src="docs/images/toggle-switch-login-page.png" alt="Animated toggle switch between One-Time Login and Remember 1 Year on a login page" width="726"><br>
+  <em>The finished toggle switch on a login page, sliding between "One-Time Login" and "Remember 1 Year"</em>
+</p>
 
-📌 **Stay tuned** — more Oracle APEX plugins and tutorials are coming. Read the original write-up for this plugin on [ApexCodex](https://apexcodex.blogspot.com/2026/08/how-to-build-stylish-auto-login-toggle.html).
+---
+
+That's the full build — from an empty plugin shell to a production-ready, fully themeable, LOV-driven segmented toggle switch. If you build this into your own app, feel free to open an issue and share which color combinations you use most!
+
+---
+
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
+
+---
+
+## 📄 License
+
+Released under the [MIT License](LICENSE) — free to use, modify and redistribute in personal and commercial projects.
+
+---
+
+## 🙏 Credits
+
+Built by **Hassaan Ahmed Tahir** — Senior Oracle APEX Developer.
+Special thanks to **Sajjad Hanifa** for his continued guidance and support in shaping these features and building them right.
+
+📌 Read the full step-by-step write-up on **[APEX with Hassaan](https://apexwithhassaan.vercel.app/blog/auto-login-toggle-switch-plugin)**, and keep an eye on the blog for more Oracle APEX plugins and tutorials.
